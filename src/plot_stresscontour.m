@@ -1,0 +1,65 @@
+[xq_12,yq_12,vq_12]=griddata(X(1:6460),Y(1:6460),stress1(1:6460),...
+    linspace(11/15,12/15,100),linspace(0,1,100)','v4');
+[xq_13,yq_13,vq_13]=griddata(X(1+6460:6460*2),Y(1+6460:6460*2),stress1(1+6460:6460*2),...
+    linspace(12/15,13/15,100),linspace(0,1,100)','v4');
+[xq_14,yq_14,vq_14]=griddata(X(1+6460*2:6460*3),Y(1+6460*2:6460*3),stress1(1+6460*2:6460*3),...
+    linspace(13/15,14/15,100),linspace(0,1,100)','v4');
+[xq_15,yq_15,vq_15]=griddata(X(1+6460*3:6460*4),Y(1+6460*3:6460*4),stress1(1+6460*3:6460*4),...
+    linspace(14/15,15/15,100),linspace(0,1,100)','v4');
+%%
+[xq_1,yq_1,vq_1]=griddata(X(1+6460*4:6460*5),Y(1+6460*4:6460*5),stress1(1+6460*4:6460*5),...
+    linspace(0,1/15,100),linspace(0,1,100)','v4');
+[xq_2,yq_2,vq_2]=griddata(X(1+6460*5:6460*6),Y(1+6460*5:6460*6),stress1(1+6460*5:6460*6),...
+    linspace(1/15,2/15,100),linspace(0,1,100)','v4');
+[xq_3,yq_3,vq_3]=griddata(X(1+6460*6:6460*7),Y(1+6460*6:6460*7),stress1(1+6460*6:6460*7),...
+    linspace(2/15,3/15,100),linspace(0,1,100)','v4');
+[xq_4,yq_4,vq_4]=griddata(X(1+6460*7:6460*8),Y(1+6460*7:6460*8),stress1(1+6460*7:6460*8),...
+    linspace(3/15,4/15,100),linspace(0,1,100)','v4');
+[xq_5,yq_5,vq_5]=griddata(X(1+6460*8:6460*9),Y(1+6460*8:6460*9),stress1(1+6460*8:6460*9),...
+    linspace(4/15,5/15,100),linspace(0,1,100)','v4');
+[xq_6,yq_6,vq_6]=griddata(X(1+6460*9:6460*10),Y(1+6460*9:6460*10),stress1(1+6460*9:6460*10),...
+    linspace(5/15,6/15,100),linspace(0,1,100)','v4');
+[xq_7,yq_7,vq_7]=griddata(X(1+6460*10:6460*11),Y(1+6460*10:6460*11),stress1(1+6460*10:6460*11),...
+    linspace(6/15,7/15,100),linspace(0,1,100)','v4');
+[xq_8,yq_8,vq_8]=griddata(X(1+6460*11:6460*12),Y(1+6460*11:6460*12),stress1(1+6460*11:6460*12),...
+    linspace(7/15,8/15,100),linspace(0,1,100)','v4');
+[xq_9,yq_9,vq_9]=griddata(X(1+6460*12:6460*13),Y(1+6460*12:6460*13),stress1(1+6460*12:6460*13),...
+    linspace(8/15,9/15,100),linspace(0,1,100)','v4');
+[xq_10,yq_10,vq_10]=griddata(X(1+6460*13:6460*14),Y(1+6460*13:6460*14),stress1(1+6460*13:6460*14),...
+    linspace(9/15,10/15,100),linspace(0,1,100)','v4');
+[xq_11,yq_11,vq_11]=griddata(X(1+6460*14:end),Y(1+6460*14:end),stress1(1+6460*14:end),...
+    linspace(10/15,11/15,100),linspace(0,1,100)','v4');
+
+%%
+contourf(xq_1,yq_1,vq_1); hold on
+contourf(xq_2,yq_2,vq_2)
+contourf(xq_3,yq_3,vq_3)
+contourf(xq_4,yq_4,vq_4)
+contourf(xq_5,yq_5,vq_5)
+contourf(xq_6,yq_6,vq_6)
+contourf(xq_7,yq_7,vq_7)
+contourf(xq_8,yq_8,vq_8)
+contourf(xq_9,yq_9,vq_9)
+contourf(xq_10,yq_10,vq_10)
+contourf(xq_11,yq_11,vq_11)
+contourf(xq_12,yq_12,vq_12)
+contourf(xq_13,yq_13,vq_13)
+contourf(xq_14,yq_14,vq_14)
+contourf(xq_15,yq_15,vq_15)
+
+%%
+surf(xq_1,yq_1,vq_1); hold on
+surf(xq_2,yq_2,vq_2)
+surf(xq_3,yq_3,vq_3)
+surf(xq_4,yq_4,vq_4)
+surf(xq_5,yq_5,vq_5)
+surf(xq_6,yq_6,vq_6)
+surf(xq_7,yq_7,vq_7)
+surf(xq_8,yq_8,vq_8)
+surf(xq_9,yq_9,vq_9)
+surf(xq_10,yq_10,vq_10)
+surf(xq_11,yq_11,vq_11)
+surf(xq_12,yq_12,vq_12)
+surf(xq_13,yq_13,vq_13)
+surf(xq_14,yq_14,vq_14)
+surf(xq_15,yq_15,vq_15)
