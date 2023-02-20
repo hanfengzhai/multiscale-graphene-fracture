@@ -1,0 +1,163 @@
+# ---------- Initialize Simulation --------------------- 
+clear 
+units metal
+dimension 3 
+boundary p p p 
+atom_style atomic
+variable latparam equal 3.56683
+
+variable a equal 3.56683
+
+read_data   graphene20sym.data
+
+mass 1 12.0107
+
+# --------- Define Interatomic Potential --------------------- 
+# eam potential
+pair_style	tersoff
+pair_coeff	* * opt.tersoff C
+
+neighbor 2.0 bin 
+# ========== neigh_modify delay 10 check yes ==================
+neigh_modify every 1 delay 0 check yes
+
+# ========== Initialise velocities ============================
+velocity all create 300.0 63457 mom yes rot yes dist gaussian
+
+# ================= Run =====================
+timestep        0.0005
+thermo          1000
+
+fix 1 all box/relax x 0.0 y 0.0
+minimize 1.0e-8 1.0e-12 1000 10000
+
+# Specify all regions
+region all block INF INF INF INF INF INF units box
+
+variable bottom equal bound(all,ymin,all)
+variable top equal bound(all,ymax,all)
+variable b_width equal ${bottom}+5
+variable t_width equal ${top}-5
+variable heat_width equal ${b_width}+100
+variable cool_width equal ${t_width}-100
+
+region border1 block INF INF INF ${b_width} INF INF units box
+region border2 block INF INF ${t_width} INF INF INF units box
+region heat block INF INF ${b_width} ${heat_width} INF INF units box
+region cool block INF INF ${cool_width} ${t_width} INF INF units box
+
+group border1 region border1
+group border2 region border2
+group boundary union border1 border2
+group heat region heat
+group cool region cool 
+group interior subtract all boundary 
+
+# Initialise velocities
+velocity boundary set 0.0 0.0 0.0 units box
+
+# Fix to equilibrate temperature
+# fix 2 interior nvt temp 300.0 300.0 0.02
+# fix freeze boundary setforce 0.0 0.0 0.0
+
+# timestep        0.0005
+# thermo          100
+
+# run 10000
+
+# unfix 2
+reset_timestep 0
+fix 2 interior nve
+fix 3 heat heat 1 0.0 region heat
+fix 4 cool heat 1 0.0 region cool
+run 10000
+# run 100000
+
+reset_timestep 0
+compute ke all ke/atom
+variable  temp atom c_ke/1.5/8.6173324e-5
+
+variable    Nrun     equal 10000
+variable    Nsamp    equal 10
+variable    Nrepeat  equal floor(${Nrun}/${Nsamp})
+variable    Nevery   equal ${Nsamp}*${Nrepeat}
+
+compute	       cchT  interior  chunk/atom bin/1d y lower 10.0
+fix            fchT  all  ave/chunk  ${Nsamp} ${Nrepeat} ${Nevery} cchT v_temp file c40_temp.out
+
+
+run ${Nrun}
+
+# ---------- Define Settings --------------------- 
+
+neighbor 2.0 bin 
+# neigh_modify delay 10 check yes 
+neigh_modify every 1 delay 0 check yes
+
+# compute csym all centro/atom hex
+compute peratom all pe/atom
+compute strs all stress/atom NULL pair virial
+compute kitc all ke
+compute tempa all temp
+compute fcom all reduce sum c_strs[1]
+variable sigma equal c_fcom
+# ---------- Run Minimization --------------------- 
+# reset_timestep 0 
+# timestep 0.001
+
+# fix 1 all box/relax iso 0.0 vmax 0.001
+
+thermo 1
+thermo_style custom step temp pe lx ly lz press pxx pyy pzz 
+# min_style cg 
+# minimize 1e-25 1e-25 5000 10000 
+
+# ---------- Run Equilibration --------------------- 
+# reset_timestep 0
+# velocity    all create 300.0 87287 dist gaussian
+# unfix 1
+
+# #fix		1 all npt temp 300.0 300.0 0.1 x 0.0 0.0 1
+# fix     1 all nvt temp 300.0 300.0 100.0 
+# run 20000
+
+# Store final cell length for strain calculations
+variable tmp equal "lx"
+variable L0 equal ${tmp}
+print "Initial Length, L0: ${L0}"
+
+# ---------- Run Tensile Test --------------------- 
+reset_timestep	0
+# fix		1 all nvt temp 300.0 300.0 0.1 
+#fix		1 all npt temp 300.0 300.0 0.1 x 0.0 0.0 1
+
+# Impose strain on the system
+variable srate equal 1.0e10
+variable srate1 equal "v_srate / 1.0e12"
+fix		tens all deform 1 x erate ${srate1} units box remap x
+
+# Output strain and stress info to file
+# for units metal, pressure is in [bars] = 0.0001 [GPa]
+# p2, p3, p4 are in GPa
+variable strain equal "(lx - v_L0)/v_L0"
+variable p1 equal "v_strain"
+variable p2 equal "-pxx*0.0001"
+variable p3 equal "-pyy*0.0001"
+variable p4 equal "-pzz*0.0001"
+# variable sts equal ${c_strs[1]}
+# fix def1 all print 100 "${p1} ${p2} ${p3} ${p4} ${sigma}" file test1.txt screen no
+fix def1 all print 100 "${p1} ${p2} ${sigma}" file crack4_0.txt screen no
+
+# fix avrg all ave/atom 100 100 100 c_strs[1] 
+# dump 		2 all custom 100 crack1.dump mass type xs ys zs c_peratom vx vy vz fx fy fz c_strs[1] c_strs[2] c_strs[3] c_kitc[1] c_kitc[2] c_kitc[3] c_tempa
+dump 		2 all custom 100 crack4_0.dump mass type xs ys zs vx vy vz fx fy fz c_strs[1] c_strs[2] c_strs[3]
+# dump        const all custom 1000 stress.txt f_avrg
+dump_modify 2 element C
+
+# Display thermo
+thermo 	1000
+thermo_style	custom step v_strain temp v_p2 v_p3 v_p4 ke pe press
+
+run		50000
+
+print "All done!" 
