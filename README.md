@@ -5,7 +5,7 @@ Source codes for study on thermal gradient effect on graphene crack propagation.
 
 Course project for [Multiscale Computational Mechanics](https://classes.cornell.edu/browse/roster/SP21/class/MAE/6260). If you use the code please cite:
 
-'''
+```
 @misc{zhai2022multiscale,
     title={Multiscale mechanics of thermal gradient coupled graphene fracture: A molecular dynamics study},
     author={Hanfeng Zhai and Jingjie Yeo},
@@ -14,4 +14,4 @@ Course project for [Multiscale Computational Mechanics](https://classes.cornell.
     archivePrefix={arXiv},
     primaryClass={cond-mat.mtrl-sci}
 }
-'''
+```
