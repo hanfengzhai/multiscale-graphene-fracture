@@ -19,4 +19,4 @@ If you use the code please cite:
 
 ***
 
-If you are a Cornell student and interested in this work, I strongly recommend you taking [Multiscale Computational Mechanics](https://classes.cornell.edu/browse/roster/SP21/class/MAE/6260). 
+If you are a Cornell student and interested in this work, I strongly recommend you taking [MAE 6260: Multiscale Computational Mechanics](https://classes.cornell.edu/browse/roster/SP21/class/MAE/6260). 
